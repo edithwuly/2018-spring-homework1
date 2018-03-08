@@ -13,9 +13,6 @@ import org.junit.Test;
 public class WordladderTest {
 	static char[] alpha = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
 	static Queue <String> infected = new LinkedList<String>();
-	static HashMap<String, String> route = new HashMap<String, String>();
-	static boolean done = false;
-	static String out="";
 	static HashSet<String> dict = new HashSet<String>();
 	
 	
@@ -40,4 +37,13 @@ public class WordladderTest {
 		assertEquals(true,Wordladder.testBothWords("code","data"));
 	}
 
+	@Test
+	public void testBody()
+	{	
+		assertEquals("A ladder from data back to code:\ndata date cate cade code",Wordladder.body("code","data"));
+		Wordladder.getDict("dictionary.txt");
+		assertEquals("A ladder from code back to data:\ncode cote cate date data",Wordladder.body("data","code"));
+		Wordladder.getDict("dictionary.txt");
+		assertEquals("A ladder from dog back to cat:\ndog dot cot cat",Wordladder.body("cat","dog"));
+	}
 }

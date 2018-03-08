@@ -5,11 +5,9 @@ import java.util.*;
 public class Wordladder
 {
 	static char[] alpha = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
-	static Queue <String> infected = new LinkedList<String>();
-	static HashMap<String, String> route = new HashMap<String, String>();
-	static boolean done = false;
-	static String out="";
+	static Queue <String> infected = new LinkedList<String>();	
 	static HashSet<String> dict = new HashSet<String>();
+	
 	public static void main(String[] args)
 	{	
 		System.out.print("Dictionary file name? ");
@@ -36,21 +34,11 @@ public class Wordladder
 			if (!testSingleWord(w2)) 
 				continue;
 			
-			if (!testBothWords(w1,w2)) return;
-			
-			infected.offer(w1);
-			dict.remove(w1);							
-			while (!done) 
-			{
-				go(w1, w2);
-			}
-			System.out.print(out);							
-
-			dict.clear();
-			route.clear();
-			infected.clear();
-			done=false;
-			
+			if (!testBothWords(w1,w2)) 
+				return;
+					
+			System.out.print(body(w1, w2));							
+		
 			System.out.println();
 		}
 	}
@@ -110,58 +98,68 @@ public class Wordladder
 			System.exit(0);
 		}
 	}
-	public static void go(String w1, String w2) 
+	public static String body(String w1, String w2) 
 	{
-		Queue<String> newinfected = new LinkedList<String>();
-		String first;
-		String create;
-		String temp;
-		
-		while (!infected.isEmpty()) 
+		HashMap<String, String> route = new HashMap<String, String>();
+		boolean done = false;
+		String out="";
+		infected.offer(w1);
+		dict.remove(w1);
+		while (!done)
 		{
-			first = infected.peek();
-			for (int i = 0; i < first.length(); i++) 
+			Queue<String> newinfected = new LinkedList<String>();
+			String first;
+			String create;
+			String temp;
+		
+			while (!infected.isEmpty()) 
 			{
-				for (char cc : alpha) 
+				first = infected.peek();
+				for (int i = 0; i < first.length(); i++) 
 				{
-					temp = first;
-					first = first.substring(0, i) + cc +first.substring(i+1);
-					create = first;
-					first = temp;
-					if (create.equals(w2)) 
+					for (char cc : alpha) 
 					{
-						done = true;
-						String now = first;
-						out = w2;
-						out += " ";
-						out += first;
-						while (now != w1) 
+						temp = first;
+						first = first.substring(0, i) + cc +first.substring(i+1);
+						create = first;
+						first = temp;
+						if (create.equals(w2)) 
 						{
+							done = true;
+							String now = first;
+							out = w2;
 							out += " ";
-							now = route.get(now);
-							out += now;
+							out += first;
+							while (now != w1) 
+							{
+								out += " ";
+								now = route.get(now);
+								out += now;
+							}
+							dict.clear();
+							infected.clear();
+							return "A ladder from " +w2+" back to "+w1+":\n"+out;
 						}
-						System.out.print("A ladder from " +w2+" back to "+w1+":\n");
-						return;
-					}
-					if (dict.contains(create)) 
-					{
-						if (!route.containsKey(create)) 
-							route.put(create, first);
-						newinfected.offer(create);
-						dict.remove(create);
+						if (dict.contains(create)) 
+						{
+							if (!route.containsKey(create)) 
+								route.put(create, first);
+							newinfected.offer(create);
+							dict.remove(create);
+						}
 					}
 				}
+				infected.poll();
 			}
-			infected.poll();
+			if (newinfected.isEmpty()) 
+			{
+				done = true;
+				dict.clear();
+				infected.clear();
+				return "No word ladder found from " + w2 + " back to " + w1 + ".";
+			}
+			infected = newinfected;
 		}
-		if (newinfected.isEmpty()) 
-		{
-			done = true;
-			out = "No word ladder found from " + w2 + " back to " + w1 + ".";
-			return;
-		}
-		infected = newinfected;
-		return;
+		return "";
 	}
 }

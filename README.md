@@ -4,4 +4,4 @@ Requirement:
 2. Junit
 3. Maven or Gradle
 
-The dictionary.txt and maven_Wordladder-0.0.1-SNAPSHOT.jar is the key files.
+The dictionary.txt and maven_Wordladder-0.0.1-SNAPSHOT.jar are the key files.
